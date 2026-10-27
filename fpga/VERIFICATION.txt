@@ -1,0 +1,36 @@
+Target: Digilent Basys 3, xc7a35tcpg236-1, 100 MHz board clock
+Tools actually used: Vivado / XSim 2018.3 on Windows
+
+Behavioral serial-UART simulation: PASS
+  Production 100 MHz clock and 115200 baud timing were used.
+  Tests cover request/reply byte order; A5/5A inside sequence/payload;
+  incorrect checksum followed by a valid frame; partial-packet timeout;
+  approximately +/-2 percent sender baud offset; back-to-back requests;
+  invalid stop-bit recovery; and reset during a partial request.
+  Only the interbyte timeout was shortened in the testbench to reduce runtime.
+
+Synthesis / placement / routing / bitstream generation: PASS
+  Device: xc7a35tcpg236-1
+  Internal setup WNS: +4.410 ns, TNS 0.000 ns
+  Internal hold WHS: +0.131 ns, THS 0.000 ns
+  DRC violations: 0
+  Slice LUTs: 215 / 20800
+  Slice registers: 274 / 41600
+  BRAM used: 0
+
+Prebuilt file: prebuilt/board_link_top.bit
+SHA256: 56334723F9F1834C905C2EF53D1087FD2E7D0E0F2612F75AD11D73EADAB1A23F
+
+No board was connected, programmed, or physically tested by these checks.
+The external UART and button are asynchronous to the 100 MHz clock;
+their physical wiring, logic levels, clock tolerance, and signal quality
+must still be checked on the actual two boards. Timing results above are
+for the FPGA's constrained clocked logic, not an external-board timing test.
+
+Commands (choose build directories outside the source folder if desired):
+  vivado -mode batch -source sim.tcl -tclargs <simulation-project-directory>
+  vivado -mode batch -source build.tcl -tclargs <bitstream-output-directory>
+
+create_project.tcl creates a normal .xpr project for GUI use.
+build.tcl builds in a single process and never opens a hardware target.
+Only constraints/board_link.xdc is added to the project by the scripts.

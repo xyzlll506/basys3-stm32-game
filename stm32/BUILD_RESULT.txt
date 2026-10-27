@@ -1,0 +1,6 @@
+Compiler: Keil ARM Compiler 5.06 update 7 (build 960)
+Device: STM32F413ZH
+Result: 0 errors, 0 warnings
+Program Size: Code=7248 RO-data=528 RW-data=24 ZI-data=1168
+Validation: compilation/link/HEX generation only; no board programming or hardware test.
+HEX SHA256: 608e7101e5b8470364d7235df3c288b7cde9a7c73d14a8eafb51746430fd4e4b

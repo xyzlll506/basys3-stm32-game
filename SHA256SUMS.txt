@@ -1,0 +1,2 @@
+56334723f9f1834c905c2ef53d1087fd2e7d0e0f2612f75ad11d73eadab1a23f  fpga/prebuilt/board_link_top.bit
+608e7101e5b8470364d7235df3c288b7cde9a7c73d14a8eafb51746430fd4e4b  stm32/firmware/nucleo_f413zh_uart.hex

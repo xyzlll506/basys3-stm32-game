@@ -1,0 +1,35 @@
+# Normalize text for reproducible cloning on Windows/Linux.
+* text=auto eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.v text eol=lf
+*.sv text eol=lf
+*.xdc text eol=lf
+*.tcl text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.s text eol=lf
+*.sct text eol=lf
+*.uvprojx text eol=crlf
+*.dbgconf text eol=crlf
+*.ps1 text eol=crlf
+*.svg text eol=lf
+# Keep the published image checksums independent of line-ending settings.
+*.hex -text -whitespace
+*.bit binary
+*.png binary
+*.jpg binary
+*.pdf binary
+*.zip binary
+
+# Preserve upstream whitespace in imported vendor sources and license text.
+stm32/Drivers/** -whitespace
+stm32/Core/Src/system_stm32f4xx.c -whitespace
+stm32/Core/Inc/stm32f4xx_hal_conf.h -whitespace
+stm32/MDK-ARM/DebugConfig/** -whitespace
+stm32/MDK-ARM/RTE/** -whitespace
+stm32/LICENSE_ST_TEMPLATE.txt -whitespace
+stm32/Package_license.md -whitespace

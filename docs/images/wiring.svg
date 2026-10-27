@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="590" viewBox="0 0 1100 590">
+  <defs>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#c54b3a"/></marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#2877aa"/></marker>
+  </defs>
+  <rect width="1100" height="590" fill="#f6f7f9"/>
+  <g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" fill="#203447">
+    <text x="55" y="58" font-size="29" font-weight="700">第一次双板连接 · UART 115200 / 8N1</text>
+    <text x="55" y="93" font-size="17" fill="#526777">先断电接线，两块板各自通过编程 USB 供电。</text>
+    <rect x="55" y="130" width="375" height="335" rx="17" fill="#ffffff" stroke="#cbd5df" stroke-width="2"/>
+    <rect x="670" y="130" width="375" height="335" rx="17" fill="#ffffff" stroke="#cbd5df" stroke-width="2"/>
+    <text x="80" y="170" font-size="23" font-weight="700">NUCLEO-F413ZH</text>
+    <text x="80" y="198" font-size="16" fill="#526777">USART6 · ST Zio 的 CN10 接头</text>
+    <text x="695" y="170" font-size="23" font-weight="700">Basys 3</text>
+    <text x="695" y="198" font-size="16" fill="#526777">Pmod JA 接头</text>
+    <text x="80" y="249" font-size="21" font-weight="700">D1 / PG14 · TX</text>
+    <text x="80" y="275" font-size="16" fill="#526777">CN10 第 14 脚</text>
+    <text x="695" y="249" font-size="21" font-weight="700">JA1 · RX</text>
+    <text x="695" y="275" font-size="16" fill="#526777">JA 第 1 脚（XDC 封装脚 J1）</text>
+    <text x="80" y="332" font-size="21" font-weight="700">D0 / PG9 · RX</text>
+    <text x="80" y="358" font-size="16" fill="#526777">CN10 第 16 脚</text>
+    <text x="695" y="332" font-size="21" font-weight="700">JA2 · TX</text>
+    <text x="695" y="358" font-size="16" fill="#526777">JA 第 2 脚（XDC 封装脚 L2）</text>
+    <text x="80" y="415" font-size="21" font-weight="700">GND</text>
+    <text x="80" y="441" font-size="16" fill="#526777">CN10 第 22 脚</text>
+    <text x="695" y="415" font-size="21" font-weight="700">JA5 · GND</text>
+    <text x="695" y="441" font-size="16" fill="#526777">JA 第 5 脚（第 11 脚也可）</text>
+    <path d="M430 245H665" stroke="#c54b3a" stroke-width="4" marker-end="url(#arrowRed)"/>
+    <text x="477" y="231" font-size="16" fill="#c54b3a">STM32 → FPGA</text>
+    <path d="M670 328H435" stroke="#2877aa" stroke-width="4" marker-end="url(#arrowBlue)"/>
+    <text x="477" y="314" font-size="16" fill="#2877aa">FPGA → STM32</text>
+    <path d="M430 411H670" stroke="#657482" stroke-width="4"/>
+    <text x="519" y="397" font-size="16" fill="#526777">共地</text>
+    <text x="55" y="508" font-size="20" font-weight="700" fill="#a04032">只连 TX、RX、GND；不要互连两块板的 3.3V / 5V。</text>
+    <text x="55" y="541" font-size="16" fill="#526777">JA 第 6、12 脚是 3.3V。请按板上 JA、1、GND 标记定位，图示不表示实物上下方向。</text>
+    <text x="55" y="568" font-size="16" fill="#526777">USB：NUCLEO 用 CN1 ST-LINK；Basys 3 用 PROG。信号电平为 3.3V TTL。</text>
+  </g>
+</svg>
