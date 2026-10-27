@@ -25,6 +25,7 @@ __pycache__/
 *.tmp
 *.bak
 *.zip
+/usage_statistics_webtalk.*
 
 # Vivado: recreate the GUI project from create_project.tcl
 fpga/project/

@@ -8,6 +8,7 @@ or replace FPGA timing analysis and physical board testing.
 import hashlib
 from pathlib import Path, PureWindowsPath
 import re
+import subprocess
 import sys
 from urllib.parse import unquote, urlsplit
 import xml.etree.ElementTree as ET
@@ -32,8 +33,7 @@ def project_path(project_dir, value):
     return inside_repo(project_dir / value.replace("\\", "/"))
 
 
-def check_keil():
-    project = ROOT / "stm32/MDK-ARM/nucleo_f413zh_uart.uvprojx"
+def check_keil_project(project):
     tree = ET.parse(project)
     refs = tree.findall(".//FilePath")
     require(bool(refs), "Keil project has no sources")
@@ -52,12 +52,25 @@ def check_keil():
     target = tree.findtext(".//TargetName")
     for element in tree.findall(".//targetInfo"):
         require(element.get("name") == target, "RTE target name does not match Keil target")
-    print("PASS: Keil relative references (%d source files)" % len(refs))
+    print("PASS: %s relative references (%d source files)" % (project.name, len(refs)))
+
+
+def check_keil():
+    projects = sorted((ROOT / "stm32/MDK-ARM").glob("*.uvprojx"))
+    require(bool(projects), "No Keil project found")
+    for project in projects:
+        check_keil_project(project)
 
 
 def check_firmware():
     manifest = ROOT / "SHA256SUMS.txt"
-    expected_paths = {"fpga/prebuilt/board_link_top.bit", "stm32/firmware/nucleo_f413zh_uart.hex"}
+    expected_paths = {
+        file.relative_to(ROOT).as_posix()
+        for folder, pattern in (("fpga/prebuilt", "*.bit"), ("stm32/firmware", "*.hex"))
+        for file in (ROOT / folder).glob(pattern)
+    }
+    require({"fpga/prebuilt/board_link_top.bit", "stm32/firmware/nucleo_f413zh_uart.hex"}
+            <= expected_paths, "UART starter firmware is missing")
     seen = set()
     for line in manifest.read_text(encoding="utf-8-sig").splitlines():
         if not line.strip() or line.startswith("#"):
@@ -71,7 +84,13 @@ def check_firmware():
         seen.add(name)
     require(seen == expected_paths, "Firmware checksum entries are missing")
 
-    firmware = ROOT / "stm32/firmware/nucleo_f413zh_uart.hex"
+    for name in sorted(expected_paths):
+        if name.endswith(".hex"):
+            check_intel_hex(ROOT / name)
+    print("PASS: published BIT/HEX SHA256 and Intel HEX records")
+
+
+def check_intel_hex(firmware):
     eof = False
     data_records = 0
     for line_no, line in enumerate(firmware.read_text(encoding="ascii").splitlines(), 1):
@@ -87,13 +106,15 @@ def check_firmware():
             require(record[:4] == bytes((0, 0, 0, 1)), "Malformed Intel HEX EOF")
             eof = True
     require(eof and data_records > 0, "Intel HEX data/EOF missing")
-    print("PASS: BIT/HEX SHA256 and Intel HEX records")
 
 
 def check_docs():
     documents = list((ROOT / "docs").rglob("*.md"))
     documents += list(ROOT.glob("*.md"))
     documents += [ROOT / "fpga/README.md", ROOT / "stm32/README_STM32.md"]
+    documents += list((ROOT / "game").rglob("*.md"))
+    documents += list((ROOT / "fpga/game").rglob("*.md"))
+    documents += list((ROOT / "stm32/Game").rglob("*.md"))
     count = 0
     for document in documents:
         content = document.read_text(encoding="utf-8-sig")
@@ -133,7 +154,10 @@ def main():
         check_firmware()
         check_docs()
         check_licenses()
-    except (ValueError, OSError, ET.ParseError) as exc:
+        generator = ROOT / "scripts/generate_level.py"
+        if generator.exists():
+            subprocess.run([sys.executable, str(generator), "--check"], cwd=ROOT, check=True)
+    except (ValueError, OSError, ET.ParseError, subprocess.CalledProcessError) as exc:
         print("FAIL: " + str(exc), file=sys.stderr)
         return 1
     print("PASS: repository checks; no compilation or hardware test performed")

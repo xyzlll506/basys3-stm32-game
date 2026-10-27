@@ -1,4 +1,4 @@
-name: Repository and UART checks
+name: Repository, UART and game checks
 
 on:
   push:
@@ -18,6 +18,10 @@ jobs:
           persist-credentials: false
       - name: Check project references, docs and published firmware
         run: python3 scripts/check_repo.py
+      - name: Test shared level generation
+        run: python3 -m unittest discover -s tests -p test_level_generator.py
+      - name: Test portable C game engine and protocol
+        run: python3 stm32/Game/run_tests.py
 
   uart-simulation:
     runs-on: ubuntu-24.04
@@ -32,3 +36,5 @@ jobs:
           sudo apt-get install --no-install-recommends -y iverilog
       - name: Run physical UART and packet testbench
         run: python3 scripts/run_hdl_sim.py
+      - name: Run VGA timing and game packet testbench
+        run: python3 scripts/run_game_hdl_sim.py

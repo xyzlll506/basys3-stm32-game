@@ -1,0 +1,35 @@
+Verification date: 2026-10-27 (Asia/Shanghai)
+Target: NUCLEO-F413ZH, STM32F413ZH, separate game firmware
+
+Keil rebuild: PASS
+  ARM Compiler 5.06 update 7 (build 960)
+  Target NUCLEO_F413ZH_GAME
+  Compilation/link/Intel HEX generation: 0 errors, 0 warnings
+  Program Size: Code=7614 RO-data=586 RW-data=32 ZI-data=1224
+  The game project references 21 source files with valid relative paths.
+  Output directory: MDK-ARM/Objects/game/ (ignored build output)
+
+Host production-code tests: PASS
+  Clang (MSYS2 clang64), C99, -Wall -Wextra -Werror -pedantic -O2
+  Tests compile the production game_engine.c and game_protocol.c.
+  Covers horizontal movement, opposing buttons, jump edges, no double jump,
+  world bounds, platform top/bottom/side collisions, hazards, death saturation,
+  respawn, restart, win/frozen state, and out-of-world recovery.
+  A complete route begins with GameEngine_Init and uses input buttons only:
+  179 frames, zero deaths, reaches won. No test-coordinate injection is used
+  in this playable-route regression.
+  Protocol tests cover A5/5A sequences, little-endian reply layout and XOR,
+  bad XOR and reserved input rejection, duplicate sequence suppression,
+  conflicting duplicate rejection, partial-frame timeout, millisecond wrap,
+  FPGA sequence reset and 8-bit sequence wrap.
+
+Published firmware: firmware/nucleo_f413zh_game.hex
+SHA256: 8595531aab6b1085cbac2e6bcdbe89b2a5fac09b0ca67bef14003715b8bb33dd
+
+Configuration: HSI 16 MHz; USART6 PG14(TX)/PG9(RX), 115200 8N1;
+USART3 PD8(TX)/PD9(RX) ST-LINK virtual COM logging. No UART IRQ/DMA.
+
+Verification boundary: no physical board was connected, programmed, or tested.
+Host tests do not execute the HAL polling layer or verify external UART timing.
+Use the matching FPGA game bitstream; the original UART echo-test firmware
+uses a different communication role and reply format.

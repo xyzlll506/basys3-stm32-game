@@ -2,11 +2,14 @@
 
 使用 **Digilent Basys 3** 和 **STM32 NUCLEO-F413ZH**，逐步实现彩色 VGA 2D 游戏。计划由 STM32 处理游戏状态，FPGA 生成画面，两块板通过 UART 交换数据。
 
-**当前阶段：双板 UART 通信初开发。** 已有可编译的两侧源码、串行通信仿真和预编译文件；VGA 绘图、人物移动、地图和音效尚未实现。实体板接线与回包尚未实测。
+**当前分为两组工程：UART 接线测试，以及 VGA 单关卡游戏原型。** 实物联调先使用原 UART 工程；游戏原型单独构建，包含角色移动、跳跃、平台、危险区与出口。两组程序的实体板接线、回包和 VGA 显示均尚未实测。
 
 ## 从这里开始
 
 - [接线、CubeMX 配置、下载与故障排查](docs/getting-started.md)
+- [第一次实物测试：三根线怎么接](docs/hardware-test.md)
+- [VGA 游戏原型：下载与操作](docs/game-prototype.md)
+- [游戏模式协议](docs/game-protocol.md)
 - [FPGA 工程与仿真](fpga/README.md)
 - [STM32 / Keil 工程](stm32/README_STM32.md)
 - [当前 UART 协议](docs/protocol.md)
@@ -14,7 +17,7 @@
 - [上传 GitHub](docs/github-upload.md)
 - [验证记录](docs/verification/uart-starter-2026-10-27.txt)
 
-## 当前功能
+## UART 接线测试
 
 STM32 每 500 ms 发送带序号和 XOR 校验的四字节请求，FPGA 校验后回包；STM32 验证回包，通过 ST-LINK 虚拟串口输出 `PASS`、`TIMEOUT` 等日志。板载 LED 显示心跳、收包及错误状态。
 
@@ -84,6 +87,7 @@ Keil 命令行重建：
 .
 ├── fpga/                 Verilog、XDC、Tcl、仿真、预编译 BIT
 ├── stm32/                HAL/CMSIS、应用、Keil 工程、预编译 HEX
+├── game/                 共享关卡 JSON 与生成的 C / Verilog 头
 ├── docs/                 入门教程、接线图、协议、路线和验证记录
 ├── scripts/              仓库自检与可选 Icarus 仿真入口
 ├── .github/              自动检查和 Issue / PR 模板
@@ -93,18 +97,22 @@ Keil 命令行重建：
 
 ## 验证状态
 
+下面先列原 UART 工程的验证；游戏原型的独立结果见 [游戏验证记录](docs/verification/game-prototype-2026-10-27.md)。
+
 - XSim：真实 100 MHz / 115200 时序下，正常包、错误校验、部分包超时、波特率偏差、背靠背请求及复位恢复通过。
 - Vivado：综合、布局布线和 BIT 生成通过；DRC 0 项，内部 setup WNS +4.410 ns、hold WHS +0.131 ns。
 - Keil：完整编译与链接通过，0 错误、0 警告，生成 HEX。
 - 实体开发板：尚未连接、下载或实测，不能将以上记录当作板间通信已通过。
 
-GitHub Actions 已配置仓库自检和 Icarus UART 仿真，首次上传后才会在 GitHub 执行；它不替代 Vivado 实现、Keil 链接或实物验证。Windows 本地可执行：
+原 UART 提交的 GitHub Actions 仓库自检和 Icarus 仿真已通过。游戏分支另加入关卡生成、纯 C 游戏与游戏 HDL 检查，远端执行结果以对应提交的 Actions 为准；它不替代 Vivado 实现、Keil 链接或实物验证。Windows 本地可执行：
 
 ```powershell
 python scripts/check_repo.py
 # 另需安装 Icarus Verilog，并使 iverilog / vvp 可用：
 python scripts/run_hdl_sim.py
 ```
+
+游戏原型入口为 `fpga/create_game_project.tcl` 和 `stm32/MDK-ARM/nucleo_f413zh_game.uvprojx`，完整操作见 [游戏原型说明](docs/game-prototype.md)。原 UART 工程与预编译文件保持可用。
 
 ## 贡献和许可
 
